@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
                     if (cadena[i] == '*') {
                         cout << "cadena[i]" << i << endl;
                         for (int j = 1; j < cadena.size(); j++) {
-                            if (cadena == -1) {
+                            if (cadena[i - j] == -1) {
                                 break;
                             } else if (cadena[i - j] == '*') {
                                 cadena_menos_1 = cadena[i - j] + 1;
@@ -147,6 +147,8 @@ int main(int argc, char** argv) {
 
                 break;
             }
+
+
 
             default:
             {
@@ -240,35 +242,36 @@ void printMatrix(int** matriz, int fila, int columna) {
 }
 
 void sumaMatrices(int** matriz_a, int** matriz_b, int fila, int columna) {
-
     int** matriz_c = new int*[fila];
     for (int i = 0; i < fila; i++)
         matriz_c[i] = new int[columna];
-
-
-    for (int i = 0; i < fila; i++)
-        for (int j = 0; j < columna; j++)
+        
+    for (int i = 0; i < fila; i++) {
+        for (int j = 0; j < columna; j++) {
             matriz_c[i][j] = matriz_a[i][j] + matriz_b[i][j];
+        }
+    }
 
 
+    printMatrix(matriz_c, fila, columna);
 }
 
 void restaMatrices(int** matriz_a, int** matriz_b, int fila, int columna) {
-
     int** matriz_c = new int*[fila];
     for (int i = 0; i < fila; i++)
         matriz_c[i] = new int[columna];
 
-
-    for (int i = 0; i < fila; i++)
-        for (int j = 0; j < columna; j++)
+    for (int i = 0; i < fila; i++) {
+        for (int j = 0; j < columna; j++) {
             matriz_c[i][j] = matriz_a[i][j] - matriz_b[i][j];
+        }
+    }
 
+    printMatrix(matriz_c, fila, columna);
 
 }
 
 void multiplicacionMatrices(int** matriz_a, int** matriz_b, int filaA, int filaB, int ColumnaA, int ColumnaB) {
-
 
     int** matriz_c = new int*[filaA];
     for (int i = 0; i < filaA; i++)
@@ -282,11 +285,11 @@ void multiplicacionMatrices(int** matriz_a, int** matriz_b, int filaA, int filaB
                     matriz_c[i][j] += matriz_a[i][k] * matriz_b[k][j];
             }
         }
-
-
-
-    } else
+    } else {
         cout << "solo se puede mutiplicar matriz si Matriz A Columna es igual a Matriz B Fila" << endl;
+    }
+
+    printMatrix(matriz_c, filaA, ColumnaB);
 
 }
 
