@@ -29,9 +29,9 @@ void liberarMatriz(int**&, int);
 
 void printMatrix(int**, int, int);
 
-void sumaMatrices(int**, int**, int, int);
-void restaMatrices(int**, int**, int, int);
-void multiplicacionMatrices(int**, int**, int, int, int, int);
+int** sumaMatrices(int**, int**, int**, int, int);
+int** restaMatrices(int**, int**, int**, int, int);
+int** multiplicacionMatrices(int**, int**, int**, int, int, int, int);
 
 /*
  * 
@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
 
                 break;
             }
-            case 3:
+            case 3: // Solo funciona si es 1*1 o 0+1 o 1-0
             {
 
                 for (int i = 0; i < arreglo_matrices.size(); i++) {
@@ -97,56 +97,90 @@ int main(int argc, char** argv) {
                     printMatrix(arreglo_matrices[i], arreglo_matrices_fila[i], arreglo_matrices_columna[i]);
 
                 }
-                int cadena_menos_1, cadena_menos_2, cadena_mas_1, cadena_mas_2;
+                int cadena_sub, cadena_sub2, cadena_sub3, cadena_sub4;
+                int** temporal = NULL;
                 string cadena = "";
                 cout << "Ingrese la operacion" << endl;
                 cin >> cadena;
 
-                for (int i = 0; i < cadena.size(); i++) {
-                    cout << "prueba 1";
+                int size_cadena = cadena.size() - 1;
+
+                for (int i = 0; i < size_cadena; i++) {
                     if (cadena[i] == '*') {
-                        cout << "cadena[i]" << i << endl;
-                        for (int j = 1; j < cadena.size(); j++) {
-                            if (cadena[i - j] == -1) {
-                                break;
-                            } else if (cadena[i - j] == '*') {
-                                cadena_menos_1 = cadena[i - j] + 1;
-                            } else if (cadena[i - j] == '+' || cadena[i - j] == '-') {
-                                cadena_menos_1 = cadena[i - j] + 1;
+                        cadena_sub = stoi(cadena.substr(i - 1));
+                        cadena_sub2 = stoi(cadena.substr(i + 1));
 
-                            } else {
-                                cadena_menos_2 = cadena[i - j];
+                        temporal = InicializarMatriz(arreglo_matrices_fila[cadena_sub], arreglo_matrices_columna[cadena_sub2]);
 
-                            }
+                        temporal = LlenarMatriz(temporal, arreglo_matrices_fila[cadena_sub], arreglo_matrices_columna[cadena_sub2]);
 
-                            if (cadena[i + j] == cadena.size()) {
-                                break;
-                            } else if (cadena[i + j] == '*') {
-                                cadena_mas_1 = cadena[i + j] - 1;
+                        temporal = multiplicacionMatrices(temporal, arreglo_matrices[cadena_sub], arreglo_matrices[cadena_sub2],
+                                arreglo_matrices_fila[cadena_sub], arreglo_matrices_fila[cadena_sub2], arreglo_matrices_columna[cadena_sub],
+                                arreglo_matrices_columna[cadena_sub2]);
 
-                            } else if (cadena[i + j] == '+' || cadena[i - j] == '-') {
-                                cadena_mas_1 = cadena[i + j] - 1;
+                        arreglo_matrices.push_back(temporal);
 
-                            } else {
-                                cadena_mas_2 = cadena[i + j];
-                            }
+                        cadena.replace(i - 1, i + 1, to_string(arreglo_matrices.size()));
 
-                        }
-                        cout << endl;
-                        cout << "cadena mas_1=" << cadena_mas_1 << endl;
-                        cout << "cadena mas_2=" << cadena_mas_2 << endl;
-                        cout << "cadena menos_1=" << cadena_menos_1 << endl;
-                        cout << "cadena menos_2=" << cadena_menos_2 << endl;
+
+                    } else if (cadena[i] == '+') {
+
+                        cadena_sub = stoi(cadena.substr(i - 1));
+                        cadena_sub2 = stoi(cadena.substr(i + 1));
+
+                        temporal = InicializarMatriz(arreglo_matrices_fila[cadena_sub], arreglo_matrices_columna[cadena_sub]);
+
+                        temporal = LlenarMatriz(temporal, arreglo_matrices_fila[cadena_sub], arreglo_matrices_columna[cadena_sub]);
+
+                        temporal = sumaMatrices(temporal, arreglo_matrices[cadena_sub], arreglo_matrices[cadena_sub2], arreglo_matrices_fila[cadena_sub], arreglo_matrices_columna[cadena_sub]);
+
+
+                        cadena.replace(i - 1, i + 1, to_string(arreglo_matrices.size()));
+
+
+                    } else if (cadena[i] == '-') {
+                        cadena_sub = stoi(cadena.substr(i - 1));
+                        cadena_sub2 = stoi(cadena.substr(i + 1));
+
+                        temporal = InicializarMatriz(arreglo_matrices_fila[cadena_sub], arreglo_matrices_columna[cadena_sub]);
+
+                        temporal = LlenarMatriz(temporal, arreglo_matrices_fila[cadena_sub], arreglo_matrices_columna[cadena_sub]);
+
+                        temporal = restaMatrices(temporal, arreglo_matrices[cadena_sub], arreglo_matrices[cadena_sub2], arreglo_matrices_fila[cadena_sub], arreglo_matrices_columna[cadena_sub]);
+
+
+                        cadena.replace(i - 1, i + 1, to_string(arreglo_matrices.size()));
                     }
 
                 }
 
+                printMatrix(temporal, arreglo_matrices_fila[cadena_sub], arreglo_matrices_columna[cadena_sub]);
 
-
+                liberarMatriz(temporal, arreglo_matrices_fila[cadena_sub]);
 
 
                 break;
             }
+
+                //            case 5:
+                //            {
+                //
+                //                int** matriz_a = NULL;
+                //                int** matriz_b = NULL;
+                //
+                //                matriz_a = InicializarMatriz(2, 3);
+                //                matriz_b = InicializarMatriz(3, 2);
+                //
+                //                matriz_a = LlenarMatriz(matriz_a, 2, 3);
+                //                matriz_b = LlenarMatriz(matriz_b, 3, 2);
+                //                
+                //                printMatrix(matriz_a,2,3);
+                //                printMatrix(matriz_b,3,2);
+                //
+                //                multiplicacionMatrices(matriz_a, matriz_b, 2, 3, 3, 2);
+                //                break;
+                //
+                //            }
 
 
 
@@ -241,25 +275,18 @@ void printMatrix(int** matriz, int fila, int columna) {
 
 }
 
-void sumaMatrices(int** matriz_a, int** matriz_b, int fila, int columna) {
-    int** matriz_c = new int*[fila];
-    for (int i = 0; i < fila; i++)
-        matriz_c[i] = new int[columna];
-        
+int** sumaMatrices(int** matriz_c, int** matriz_a, int** matriz_b, int fila, int columna) {
+
     for (int i = 0; i < fila; i++) {
         for (int j = 0; j < columna; j++) {
             matriz_c[i][j] = matriz_a[i][j] + matriz_b[i][j];
         }
     }
 
-
-    printMatrix(matriz_c, fila, columna);
+    return matriz_c;
 }
 
-void restaMatrices(int** matriz_a, int** matriz_b, int fila, int columna) {
-    int** matriz_c = new int*[fila];
-    for (int i = 0; i < fila; i++)
-        matriz_c[i] = new int[columna];
+int** restaMatrices(int** matriz_c, int** matriz_a, int** matriz_b, int fila, int columna) {
 
     for (int i = 0; i < fila; i++) {
         for (int j = 0; j < columna; j++) {
@@ -267,21 +294,17 @@ void restaMatrices(int** matriz_a, int** matriz_b, int fila, int columna) {
         }
     }
 
-    printMatrix(matriz_c, fila, columna);
-
+    return matriz_c;
 }
 
-void multiplicacionMatrices(int** matriz_a, int** matriz_b, int filaA, int filaB, int ColumnaA, int ColumnaB) {
+int** multiplicacionMatrices(int** matriz_c, int** matriz_a, int** matriz_b, int filaA, int filaB, int ColumnaA, int ColumnaB) {
 
-    int** matriz_c = new int*[filaA];
-    for (int i = 0; i < filaA; i++)
-        matriz_c[i] = new int[ColumnaB];
 
     if (ColumnaA == filaB) {
-        for (int i = 0; i < filaA; ++i) {
-            for (int j = 0; j < ColumnaB; ++j) {
+        for (int i = 0; i < filaA; i++) {
+            for (int j = 0; j < ColumnaB; j++) {
                 matriz_c[i][j] = 0;
-                for (int k = 0; k < ColumnaA; ++k)
+                for (int k = 0; k < ColumnaA; k++)
                     matriz_c[i][j] += matriz_a[i][k] * matriz_b[k][j];
             }
         }
@@ -289,7 +312,7 @@ void multiplicacionMatrices(int** matriz_a, int** matriz_b, int filaA, int filaB
         cout << "solo se puede mutiplicar matriz si Matriz A Columna es igual a Matriz B Fila" << endl;
     }
 
-    printMatrix(matriz_c, filaA, ColumnaB);
+    return matriz_c;
 
 }
 
