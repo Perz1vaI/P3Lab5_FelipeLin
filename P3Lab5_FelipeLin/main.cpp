@@ -153,7 +153,7 @@ int main(int argc, char** argv) {
                     }
 
                 }
-
+                cout << "El resultado es:" << endl;
                 printMatrix(temporal, arreglo_matrices_fila[cadena_sub], arreglo_matrices_columna[cadena_sub]);
 
                 liberarMatriz(temporal, arreglo_matrices_fila[cadena_sub]);
